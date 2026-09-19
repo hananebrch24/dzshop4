@@ -1,0 +1,786 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --couleur-principale: #0d6efd;
+  --couleur-fond: #f6f7fb;
+  --ombre-douce: 0 4px 14px rgba(0, 0, 0, 0.08);
+  --ombre-forte: 0 12px 28px rgba(0, 0, 0, 0.16);
+  --rayon: 14px;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--couleur-fond);
+  scroll-behavior: smooth;
+}
+
+/* ---------- Animations ---------- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes badgePop {
+  0%   { transform: translate(-50%, -50%) scale(1); }
+  50%  { transform: translate(-50%, -50%) scale(1.35); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+.fade-in    { animation: fadeIn 0.6s ease both; }
+.fade-in-up { animation: fadeInUp 0.6s ease both; }
+
+/* Apparition décalée des cartes dans une grille */
+.row > div:nth-child(1) { animation-delay: 0.05s; }
+.row > div:nth-child(2) { animation-delay: 0.10s; }
+.row > div:nth-child(3) { animation-delay: 0.15s; }
+.row > div:nth-child(4) { animation-delay: 0.20s; }
+.row > div:nth-child(5) { animation-delay: 0.25s; }
+.row > div:nth-child(6) { animation-delay: 0.30s; }
+
+/* ---------- Cartes produits ---------- */
+.card {
+  border: none;
+  border-radius: var(--rayon);
+  overflow: hidden;
+  box-shadow: var(--ombre-douce);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeInUp 0.5s ease both;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--ombre-forte);
+}
+
+.card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.card:hover img {
+  transform: scale(1.08);
+}
+
+/* ---------- Boutons ---------- */
+.btn {
+  border-radius: 10px;
+  font-weight: 500;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* ---------- Champs de formulaire ---------- */
+.form-control,
+.form-select {
+  border-radius: 10px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.15);
+}
+
+/* ---------- Navbar ---------- */
+.navbar {
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+.navbar .nav-link {
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.navbar .nav-link::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 0;
+  height: 2px;
+  background: #fff;
+  transition: width 0.3s ease, left 0.3s ease;
+}
+
+.navbar .nav-link:hover::after {
+  width: 70%;
+  left: 15%;
+}
+
+.navbar .badge {
+  animation: badgePop 0.4s ease;
+}
+
+/* ---------- Alertes ---------- */
+.alert {
+  border: none;
+  border-radius: var(--rayon);
+  animation: fadeInUp 0.4s ease both;
+}
+
+/* ---------- Bannière d'accueil (étape 3) ---------- */
+.hero {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  background-size: cover;
+  background-position: center;
+}
+/* ---------- Page d'accueil ---------- */
+.hero-home {
+  min-height: 85vh;
+  /* 1) filtre sombre  2) ta photo  3) couleur de secours si la photo manque */
+  background-image:
+    linear-gradient(rgba(10, 20, 40, 0.65), rgba(10, 20, 40, 0.65)),
+    url('/images/hero.jpg');
+  background-color: #0b1f3a;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;   /* effet parallaxe léger */
+}
+
+.hero-home h1 {
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.hero-delay-1 { animation-delay: 0.1s; }
+.hero-delay-2 { animation-delay: 0.3s; }
+.hero-delay-3 { animation-delay: 0.5s; }
+.hero-delay-4 { animation-delay: 0.7s; }
+
+/* Avantages */
+.avantage {
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre-douce);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.avantage:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--ombre-forte);
+}
+
+.avantage-icone {
+  font-size: 2.8rem;
+  display: inline-block;
+  animation: flotter 3s ease-in-out infinite;
+}
+
+@keyframes flotter {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+/* Titre de section avec petit trait */
+.section-title {
+  position: relative;
+  padding-bottom: 16px;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 60px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--couleur-principale);
+  transform: translateX(-50%);
+}
+
+/* Mobile : le fond fixe est mal géré sur téléphone */
+@media (max-width: 768px) {
+  .hero-home {
+    background-attachment: scroll;
+    min-height: 70vh;
+  }
+}
+/* ---------- Page détail produit ---------- */
+.detail-img-box {
+  border-radius: var(--rayon);
+  overflow: hidden;
+  box-shadow: var(--ombre-forte);
+  background: #fff;
+}
+
+.detail-img {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.detail-img-box:hover .detail-img {
+  transform: scale(1.06);
+}
+
+.btn:disabled {
+  transform: none;
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .detail-img { height: 280px; }
+}
+/* ---------- Page panier ---------- */
+.cart-item {
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre-douce);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cart-item:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--ombre-forte);
+}
+
+.cart-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.cart-summary {
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre-forte);
+  position: sticky;
+  top: 90px;   /* reste visible pendant le défilement */
+}
+
+.cart-empty-icon {
+  font-size: 5rem;
+  display: inline-block;
+  animation: flotter 3s ease-in-out infinite;
+}
+/* ================= NAVBAR ================= */
+.nav-dz {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  padding: 16px 0;
+  background: linear-gradient(90deg, #0b1f3a, #12305c);
+  transition: padding 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeIn 0.6s ease both;
+}
+
+.nav-dz.scrolled {
+  padding: 6px 0;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+
+.nav-dz-brand {
+  font-weight: 700;
+  font-size: 1.4rem;
+  letter-spacing: 0.5px;
+}
+
+.nav-dz-logo {
+  display: inline-block;
+  transition: transform 0.4s ease;
+}
+
+.nav-dz-brand:hover .nav-dz-logo {
+  transform: rotate(-15deg) scale(1.2);
+}
+
+.nav-dz .nav-link {
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 500;
+  padding: 8px 16px;
+}
+
+.nav-dz .nav-link:hover,
+.nav-dz .nav-link.active {
+  color: #fff;
+}
+
+/* Le soulignement animé reste visible sur la page active */
+.nav-dz .nav-link.active::after {
+  width: 70%;
+  left: 15%;
+}
+
+/* Zone repliable (menu) */
+.nav-dz-collapse {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+/* Bouton burger */
+.nav-dz-toggler {
+  background: none;
+  border: none;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.nav-dz-toggler span {
+  display: block;
+  height: 3px;
+  border-radius: 2px;
+  background: #fff;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.nav-dz-toggler.open span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+.nav-dz-toggler.open span:nth-child(2) { opacity: 0; }
+.nav-dz-toggler.open span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
+/* Menu utilisateur */
+.nav-dz-user {
+  position: relative;
+}
+
+.nav-dz-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--couleur-principale);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-dz-fleche {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.nav-dz-fleche.open {
+  transform: rotate(180deg);
+}
+
+.nav-dz-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  min-width: 190px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: var(--ombre-forte);
+  padding: 8px;
+  animation: fadeInUp 0.25s ease both;
+  z-index: 1040;
+}
+
+.nav-dz-menu-item {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.nav-dz-menu-item:hover {
+  background: #f1f3f9;
+}
+
+/* Mobile : menu qui se déplie en douceur */
+@media (max-width: 991.98px) {
+  .nav-dz-collapse {
+    flex-basis: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
+  }
+
+  .nav-dz-collapse.open {
+    max-height: 480px;
+    opacity: 1;
+    padding-top: 12px;
+  }
+
+  .nav-dz-actions {
+    padding: 12px 0;
+    flex-wrap: wrap;
+  }
+
+  .nav-dz-menu {
+    position: static;
+    margin-top: 8px;
+  }
+}
+
+/* ================= FOOTER ================= */
+.footer-dz {
+  position: relative;
+  background: linear-gradient(180deg, #0b1f3a, #071427);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* Ligne lumineuse animée en haut du footer */
+.footer-dz::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #0d6efd, #6ea8fe, #0d6efd);
+  background-size: 200% 100%;
+  animation: brillance 4s linear infinite;
+}
+
+@keyframes brillance {
+  from { background-position: 0% 0; }
+  to   { background-position: 200% 0; }
+}
+
+.footer-texte {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.95rem;
+}
+
+.footer-titre {
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+
+.footer-liens li {
+  margin-bottom: 10px;
+}
+
+.footer-liens a {
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: none;
+  display: inline-block;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-liens a:hover {
+  color: #fff;
+  transform: translateX(6px);
+}
+
+.footer-social {
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.85rem;
+  padding: 6px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  transition: background 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+}
+
+.footer-social:hover {
+  background: var(--couleur-principale);
+  border-color: var(--couleur-principale);
+  transform: translateY(-3px);
+  color: #fff;
+}
+
+.footer-bas {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 0.9rem;
+}
+
+.footer-haut {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  border-radius: 20px;
+  padding: 6px 16px;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.footer-haut:hover {
+  background: var(--couleur-principale);
+  transform: translateY(-3px);
+}
+/* ---------- Photo de la carte produit ---------- */
+.card-photo {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(110deg, #e9ecf5 30%, #f6f7fb 50%, #e9ecf5 70%);
+  background-size: 200% 100%;
+  animation: chargementPhoto 1.4s linear infinite;   /* fond animé pendant le chargement */
+}
+
+@keyframes chargementPhoto {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+/* La photo apparaît en fondu une fois chargée */
+.card-photo img {
+  display: block;
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.5s ease;
+}
+
+.card-photo img.img-chargee {
+  opacity: 1;
+}
+
+/* Reflet lumineux qui traverse la photo au survol */
+.card-photo::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: skewX(-20deg);
+  pointer-events: none;
+}
+
+.card:hover .card-photo::after {
+  left: 130%;
+  transition: left 0.8s ease;
+}
+
+/* Produit en rupture : photo en noir et blanc */
+.card-photo-rupture img {
+  filter: grayscale(1);
+}
+
+/* Flèche du bouton qui glisse au survol */
+.btn-fleche {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+.btn-voir:hover .btn-fleche {
+  transform: translateX(6px);
+}
+/* ================= HERO DZSHOP ================= */
+.hero-dz {
+  position: relative;
+  overflow: hidden;
+  min-height: 88vh;
+  display: flex;
+  align-items: center;
+  padding: 80px 0 140px;
+  /* couleur de secours si la photo est absente */
+  background: linear-gradient(135deg, #0b1f3a, #0d3b8e, #0b1f3a);
+  background-size: 200% 200%;
+  animation: heroDzFond 14s ease infinite;
+}
+
+@keyframes heroDzFond {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Photo de fond avec zoom lent */
+.hero-dz::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/images/hero.jpg') center / cover no-repeat;
+  opacity: 0.55;
+  animation: heroDzZoom 22s ease-in-out infinite alternate;
+  z-index: 0;
+}
+
+/* Voile dégradé pour la lisibilité du texte */
+.hero-dz::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, rgba(8, 20, 42, 0.85), rgba(13, 110, 253, 0.35));
+  z-index: 1;
+}
+
+@keyframes heroDzZoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.15); }
+}
+
+/* Lueurs qui dérivent */
+.hero-dz-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero-dz-blob-1 {
+  width: 420px; height: 420px;
+  background: #0d6efd; opacity: 0.55;
+  top: -140px; left: -100px;
+  animation: heroDzDerive 10s ease-in-out infinite alternate;
+}
+
+.hero-dz-blob-2 {
+  width: 340px; height: 340px;
+  background: #6ea8fe; opacity: 0.45;
+  bottom: -100px; right: -60px;
+  animation: heroDzDerive 12s ease-in-out infinite alternate-reverse;
+}
+
+.hero-dz-blob-3 {
+  width: 240px; height: 240px;
+  background: #8b5cf6; opacity: 0.35;
+  top: 30%; right: 25%;
+  animation: heroDzDerive 14s ease-in-out infinite alternate;
+}
+
+@keyframes heroDzDerive {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(60px, 40px) scale(1.25); }
+}
+
+/* Grille fine façon "tech" */
+.hero-dz-grille {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  pointer-events: none;
+}
+
+/* Bulles qui montent */
+.hero-dz-bulle {
+  position: absolute;
+  bottom: -40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  z-index: 2;
+  pointer-events: none;
+  animation: heroDzMonte linear infinite;
+}
+
+.hero-dz-bulle-1 { left: 10%; width: 18px; height: 18px; animation-duration: 12s; }
+.hero-dz-bulle-2 { left: 28%; width: 30px; height: 30px; animation-duration: 16s; animation-delay: 2s; }
+.hero-dz-bulle-3 { left: 52%; width: 14px; height: 14px; animation-duration: 10s; animation-delay: 4s; }
+.hero-dz-bulle-4 { left: 72%; width: 26px; height: 26px; animation-duration: 14s; animation-delay: 1s; }
+.hero-dz-bulle-5 { left: 90%; width: 20px; height: 20px; animation-duration: 18s; animation-delay: 6s; }
+
+@keyframes heroDzMonte {
+  0%   { transform: translateY(0) scale(1); opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translateY(-95vh) scale(1.4); opacity: 0; }
+}
+
+/* Contenu au-dessus du décor */
+.hero-dz-contenu {
+  position: relative;
+  z-index: 3;
+}
+
+.hero-dz-contenu h1 {
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+}
+
+.hero-dz-texte {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+/* Apparition du texte, ligne par ligne */
+.hero-dz-anim {
+  opacity: 0;
+  animation: heroDzApparait 0.8s ease forwards;
+}
+
+.hero-dz-d1 { animation-delay: 0.15s; }
+.hero-dz-d2 { animation-delay: 0.45s; }
+.hero-dz-d3 { animation-delay: 0.75s; }
+
+@keyframes heroDzApparait {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Mot DZShop en dégradé qui brille */
+.hero-dz-degrade {
+  background: linear-gradient(90deg, #6ea8fe, #ffffff, #6ea8fe);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: heroDzBrille 5s linear infinite;
+}
+
+@keyframes heroDzBrille {
+  from { background-position: 0% center; }
+  to   { background-position: 200% center; }
+}
+
+/* Bouton qui pulse doucement */
+.hero-dz-bouton {
+  font-weight: 600;
+  padding: 14px 34px;
+  border-radius: 40px;
+  animation: heroDzPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes heroDzPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.45); }
+  50%      { box-shadow: 0 0 0 16px rgba(255, 255, 255, 0); }
+}
+
+/* Vague en bas */
+.hero-dz-vague {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 90px;
+  z-index: 3;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .hero-dz { min-height: 75vh; padding: 60px 0 110px; }
+  .hero-dz-blob-3, .hero-dz-grille { display: none; }
+}
+
+/* Respecte les personnes qui désactivent les animations */
+@media (prefers-reduced-motion: reduce) {
+  .hero-dz, .hero-dz::before, .hero-dz-blob, .hero-dz-bulle,
+  .hero-dz-degrade, .hero-dz-bouton, .hero-dz-anim {
+    animation: none !important;
+    opacity: 1;
+  }
+}
