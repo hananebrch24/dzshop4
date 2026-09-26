@@ -1,8 +1,7 @@
 import { createContext, useState, useEffect } from 'react'
+import api from '../api/axios'
 
 export const ProductsContext = createContext()
-
-const API_URL = 'http://localhost:5000/api/products'
 
 export function ProductsProvider({ children }) {
   const [products, setProducts] = useState([])
@@ -10,14 +9,11 @@ export function ProductsProvider({ children }) {
   const [erreur, setErreur] = useState('')
 
   // Au démarrage du site, on charge les produits depuis l'API
+  // (l'adresse de l'API est dans api/axios.js : plus rien en dur ici)
   useEffect(function() {
-    fetch(API_URL)
-      .then(function(reponse) {
-        if (!reponse.ok) { throw new Error('Erreur ' + reponse.status) }
-        return reponse.json()
-      })
-      .then(function(donnees) {
-        setProducts(donnees)
+    api.get('/products')
+      .then(function(rep) {
+        setProducts(rep.data)
         setChargement(false)
       })
       .catch(function() {

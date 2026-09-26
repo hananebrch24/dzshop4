@@ -1,36 +1,75 @@
-import { createContext, useState } from 'react'
-import api, { setAuthToken } from '../api/axios'
+import { createContext, useState, useEffect } from 'react'
+import api from '../api/axios'
 
 export const AuthContext = createContext()
 
+// Le message d'erreur du serveur (ex. « Identifiants incorrects »), ou un message par défaut
+function messageErreur(err) {
+  if (err.response && err.response.data && err.response.data.message) {
+    return err.response.data.message
+  }
+  return 'Serveur injoignable, réessaie dans un instant'
+}
+
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
 
-  // Met à jour le token (pour axios) + l'utilisateur (pour l'app).
-  function connecter(data) {
-    setAuthToken(data.token)
-    setUser(data)
-  }
-
-  async function login(email, password) {
+  // Au démarrage, on relit l'utilisateur sauvegardé : un F5 ne déconnecte plus
+  const [user, setUser] = useState(function() {
     try {
-      const rep = await api.post('/auth/login', { email, password })
-      connecter(rep.data)
-      return true
-    } catch (err) { return false }
-  }
+      const sauvegarde = localStorage.getItem('user')
+      return sauvegarde ? JSON.parse(sauvegarde) : null
+    } catch (err) {
+      return null
+    }
+  })
 
-  async function register(nom, email, password) {
-    try {
-      const rep = await api.post('/auth/register', { nom, email, password })
-      connecter(rep.data)
-      return true
-    } catch (err) { return false }
+  function sauvegarder(donnees) {
+    localStorage.setItem('token', donnees.token)
+    localStorage.setItem('user', JSON.stringify(donnees.user))
+    setUser(donnees.user)
   }
 
   function logout() {
-    setAuthToken(null)
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
     setUser(null)
+  }
+
+  // Au démarrage, on demande au serveur « qui suis-je ? » :
+  // si le token a expiré, on déconnecte proprement.
+  useEffect(function() {
+    if (!localStorage.getItem('token')) return
+
+    api.get('/auth/me')
+      .then(function(rep) {
+        localStorage.setItem('user', JSON.stringify(rep.data.user))
+        setUser(rep.data.user)
+      })
+      .catch(function(err) {
+        if (err.response && err.response.status === 401) { logout() }
+      })
+  }, [])
+
+  // Renvoie l'utilisateur, ou lance une Error avec le message du serveur
+  async function login(email, mdp) {
+    try {
+      // ton API attend le champ "password" (pas "mdp")
+      const rep = await api.post('/auth/login', { email: email, password: mdp })
+      sauvegarder(rep.data)
+      return rep.data.user
+    } catch (err) {
+      throw new Error(messageErreur(err))
+    }
+  }
+
+  async function register(nom, email, mdp) {
+    try {
+      const rep = await api.post('/auth/register', { nom: nom, email: email, password: mdp })
+      sauvegarder(rep.data)
+      return rep.data.user
+    } catch (err) {
+      throw new Error(messageErreur(err))
+    }
   }
 
   return (

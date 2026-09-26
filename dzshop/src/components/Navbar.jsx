@@ -68,6 +68,8 @@ function Navbar() {
           <div className="navbar-nav me-auto">
             <NavLink className={classeLien} to="/" end>Accueil</NavLink>
             <NavLink className={classeLien} to="/products">Produits</NavLink>
+            {user && <NavLink className={classeLien} to="/mes-commandes">Mes commandes</NavLink>}
+            {user && user.role === 'admin' && <NavLink className={classeLien} to="/admin">Admin</NavLink>}
           </div>
 
           <div className="d-flex align-items-center gap-3 nav-dz-actions">
@@ -85,7 +87,10 @@ function Navbar() {
             </Link>
 
             {!user ? (
-              <Link className="btn btn-light" to="/login">Connexion</Link>
+              <>
+                <Link className="btn btn-outline-light" to="/register">Inscription</Link>
+                <Link className="btn btn-light" to="/login">Connexion</Link>
+              </>
             ) : (
               <div className="nav-dz-user" ref={userRef}>
                 <button

@@ -9,20 +9,20 @@ function LoginPage() {
   const { login } = useContext(AuthContext)
   const navigate = useNavigate()
 
-  function envoyer(e) {
+  async function envoyer(e) {
     e.preventDefault()
-    if (login(email, mdp)) { navigate('/') }
-    else { setErreur('Email ou mot de passe incorrect') }
+    try {
+      // login est async : on l'attend avec await, et on attrape l'erreur du serveur
+      await login(email, mdp)
+      navigate('/')
+    } catch (err) {
+      setErreur(err.message)
+    }
   }
 
   return (
     <div className="container py-5" style={{ maxWidth: '400px' }}>
       <h1 className="mb-4">Connexion</h1>
-
-      {/* Compte de démonstration, pour tester */}
-      <div className="alert alert-info small">
-        Démo : <b>admin@dzshop.dz</b> / <b>123456</b>
-      </div>
 
       {erreur && <div className="alert alert-danger">{erreur}</div>}
 

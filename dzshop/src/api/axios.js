@@ -1,12 +1,15 @@
 import axios from 'axios'
 
-const api = axios.create({ baseURL: 'http://localhost:5000/api' })
+// Un SEUL endroit qui connaît l'adresse de l'API.
+// En local : http://localhost:5000. En ligne : la variable VITE_API_URL (sans /api à la fin).
+const api = axios.create({
+  baseURL: (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api'
+})
 
-// Le token vit ici, en mémoire (pas de localStorage) — AuthContext le met à jour.
-let token = null
-export function setAuthToken(t) { token = t }
-
+// Avant chaque requête, on ajoute le token de connexion (s'il existe).
+// Il est gardé dans le localStorage : un F5 ne déconnecte plus l'utilisateur.
 api.interceptors.request.use(function(config) {
+  const token = localStorage.getItem('token')
   if (token) { config.headers.Authorization = 'Bearer ' + token }
   return config
 })

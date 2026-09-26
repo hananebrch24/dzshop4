@@ -11,7 +11,7 @@ function RegisterPage() {
   const { register } = useContext(AuthContext)
   const navigate = useNavigate()
 
-  function envoyer(e) {
+  async function envoyer(e) {
     e.preventDefault()
     // Les vérifications (validations)
     if (mdp.length < 6) {
@@ -22,8 +22,13 @@ function RegisterPage() {
       setErreur('Les deux mots de passe ne sont pas identiques')
       return
     }
-    register(nom, email)   // tout est bon
-    navigate('/')
+    try {
+      // register est async : ton API répond « Email déjà utilisé » si le compte existe
+      await register(nom, email, mdp)
+      navigate('/')
+    } catch (err) {
+      setErreur(err.message)
+    }
   }
 
   return (
