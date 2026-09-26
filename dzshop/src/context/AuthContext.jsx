@@ -1,25 +1,37 @@
 import { createContext, useState } from 'react'
+import api, { setAuthToken } from '../api/axios'
 
 export const AuthContext = createContext()
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)   // null = déconnecté
+  const [user, setUser] = useState(null)
 
-  function login(email, mdp) {
-    // Vérif "en dur" pour l'instant (le vrai contrôle = partie 2)
-    if (email === 'admin@dzshop.dz' && mdp === '123456') {
-      setUser({ nom: 'Ali', email: email, role: 'admin' })
+  // Met à jour le token (pour axios) + l'utilisateur (pour l'app).
+  function connecter(data) {
+    setAuthToken(data.token)
+    setUser(data)
+  }
+
+  async function login(email, password) {
+    try {
+      const rep = await api.post('/auth/login', { email, password })
+      connecter(rep.data)
       return true
-    }
-    return false
+    } catch (err) { return false }
   }
 
-  // Inscription simulée : on crée un compte "client" et on le connecte.
-  function register(nom, email) {
-    setUser({ nom: nom, email: email, role: 'client' })
+  async function register(nom, email, password) {
+    try {
+      const rep = await api.post('/auth/register', { nom, email, password })
+      connecter(rep.data)
+      return true
+    } catch (err) { return false }
   }
 
-  function logout() { setUser(null) }
+  function logout() {
+    setAuthToken(null)
+    setUser(null)
+  }
 
   return (
     <AuthContext.Provider value={{ user, login, register, logout }}>

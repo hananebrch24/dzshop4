@@ -6,6 +6,7 @@ import cors from 'cors'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import authRoutes from './routes/auth.js'
+import orderRoutes from './routes/orders.js'
 dotenv.config()
 
 // On importe les routes des produits
@@ -22,6 +23,7 @@ app.use(express.json())
 // Toute adresse /api/products → gérée par routes/products.js
 app.use('/api/products', productRoutes)
 app.use('/api/auth', authRoutes)   // à côté de /api/products
+
 app.get('/', function(req, res) {
   res.json({ message: 'API DZShop en ligne 🚀' })
 })
