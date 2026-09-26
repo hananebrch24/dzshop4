@@ -1,6 +1,7 @@
 import express from 'express'
+import mongoose from 'mongoose'
 import Product from '../models/Product.js'
-import { protect } from '../middleware/auth.js'
+import { protect, isAdmin } from '../middleware/auth.js'
 
 const router = express.Router()
 
@@ -15,32 +16,52 @@ router.get('/', async function (req, res) {
 // LIRE un seul (ouvert à tous)
 router.get('/:id', async function (req, res) {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(404).json({ message: 'Introuvable' })
+    }
     const p = await Product.findById(req.params.id)
     if (!p) return res.status(404).json({ message: 'Introuvable' })
     res.json(p)
   } catch (err) { res.status(500).json({ message: err.message }) }
 })
 
-// CRÉER (protégé)
-router.post('/', protect, async function (req, res) {
+// CRÉER (ADMIN seulement : protect = connecté, isAdmin = a le droit)
+router.post('/', protect, isAdmin, async function (req, res) {
   try {
-    const nouveau = await Product.create(req.body)
+    // On choisit les champs un par un (jamais Product.create(req.body))
+    const { nom, prix, categorie, stock, image } = req.body
+    const nouveau = await Product.create({ nom, prix, categorie, stock, image })
     res.status(201).json(nouveau)
   } catch (err) { res.status(400).json({ message: err.message }) }
 })
 
-// MODIFIER (protégé)
-router.put('/:id', protect, async function (req, res) {
+// MODIFIER (ADMIN seulement)
+router.put('/:id', protect, isAdmin, async function (req, res) {
   try {
-    const p = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(404).json({ message: 'Introuvable' })
+    }
+    const { nom, prix, categorie, stock, image } = req.body
+    const p = await Product.findByIdAndUpdate(
+      req.params.id,
+      { nom, prix, categorie, stock, image },
+      { returnDocument: 'after', runValidators: true }
+    )
+    if (!p) return res.status(404).json({ message: 'Introuvable' })
     res.json(p)
   } catch (err) { res.status(400).json({ message: err.message }) }
 })
 
-// SUPPRIMER (protégé)
-router.delete('/:id', protect, async function (req, res) {
-  await Product.findByIdAndDelete(req.params.id)
-  res.json({ message: 'Supprimé' })
+// SUPPRIMER (ADMIN seulement)
+router.delete('/:id', protect, isAdmin, async function (req, res) {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(404).json({ message: 'Introuvable' })
+    }
+    const p = await Product.findByIdAndDelete(req.params.id)
+    if (!p) return res.status(404).json({ message: 'Introuvable' })
+    res.json({ message: 'Supprimé' })
+  } catch (err) { res.status(500).json({ message: err.message }) }
 })
 
 export default router

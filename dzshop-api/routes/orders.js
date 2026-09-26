@@ -42,6 +42,11 @@ router.post('/', protect, async function(req, res) {
         return res.status(400).json({ message: 'Quantité invalide pour ' + produit.nom })
       }
 
+      // Le stock doit suffire (on vérifie TOUT avant de toucher au stock)
+      if (qte > produit.stock) {
+        return res.status(400).json({ message: 'Stock insuffisant pour ' + produit.nom })
+      }
+
       sousTotal += produit.prix * qte
       lignes.push({ produit: produit._id, nom: produit.nom, prix: produit.prix, qte: qte })
     }
@@ -60,6 +65,11 @@ router.post('/', protect, async function(req, res) {
       commune: commune,
       adresse: adresse
     })
+
+    // Commande enregistrée : on retire les articles vendus du stock
+    for (const ligne of lignes) {
+      await Product.updateOne({ _id: ligne.produit }, { $inc: { stock: -ligne.qte } })
+    }
 
     res.status(201).json(commande)
   } catch (err) {
