@@ -1,9 +1,22 @@
-import { createContext, useState } from 'react'
+import { createContext, useState, useEffect } from 'react'
 
 export const CartContext = createContext()
 
 export function CartProvider({ children }) {
-  const [panier, setPanier] = useState([])
+  // Au démarrage, on relit le panier sauvegardé : un F5 ne le vide plus
+  const [panier, setPanier] = useState(function() {
+    try {
+      const sauvegarde = localStorage.getItem('panier')
+      return sauvegarde ? JSON.parse(sauvegarde) : []
+    } catch (err) {
+      return []
+    }
+  })
+
+  // À chaque changement du panier, on le sauvegarde
+  useEffect(function() {
+    localStorage.setItem('panier', JSON.stringify(panier))
+  }, [panier])
 
   function addToCart(produit) {
     const existe = panier.find(function(a){ return a._id === produit._id })
