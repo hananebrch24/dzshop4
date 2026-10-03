@@ -93,4 +93,41 @@ router.get('/', protect, isAdmin, async function(req, res) {
   } catch (err) { res.status(500).json({ message: err.message }) }
 })
 
+// CHANGER LE STATUT D'UNE COMMANDE (admin seulement)
+// Si on passe la commande à "Annulée", on RESTITUE le stock des produits.
+// Le garde-fou "etaitAnnulee" évite de recréditer le stock 2 fois si on
+// re-clique sur "Annulée" alors qu'elle l'était déjà.
+router.patch('/:id/statut', protect, isAdmin, async function(req, res) {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(404).json({ message: 'Commande introuvable' })
+    }
+
+    const { statut } = req.body
+    if (!['En attente', 'Livrée', 'Annulée'].includes(statut)) {
+      return res.status(400).json({ message: 'Statut invalide' })
+    }
+
+    const commande = await Order.findById(req.params.id)
+    if (!commande) return res.status(404).json({ message: 'Commande introuvable' })
+
+    const etaitAnnulee = commande.statut === 'Annulée'
+
+    commande.statut = statut
+    await commande.save()
+
+    // On ne restitue le stock QUE si elle passe à "Annulée" MAINTENANT
+    // (si elle était déjà annulée, on ne touche plus au stock : pas de double restitution)
+    if (statut === 'Annulée' && !etaitAnnulee) {
+      for (const ligne of commande.articles) {
+        await Product.updateOne({ _id: ligne.produit }, { $inc: { stock: ligne.qte } })
+      }
+    }
+
+    res.json(commande)
+  } catch (err) {
+    res.status(400).json({ message: err.message })
+  }
+})
+
 export default router

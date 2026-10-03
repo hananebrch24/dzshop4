@@ -1,44 +1,42 @@
-import { useState, useEffect } from 'react'
-import api from '../api/axios'
-import AddProductForm from '../components/AddProductForm'
+import { useState } from 'react'
+import AdminProduits from './admin/AdminProduits'
+import AdminCommandes from './admin/AdminCommandes'
+import AdminUtilisateurs from './admin/AdminUtilisateurs'
+import AdminStatistiques from './admin/AdminStatistiques'
+
+const ONGLETS = [
+  { cle: 'produits', label: '📦 Produits' },
+  { cle: 'commandes', label: '🧾 Commandes' },
+  { cle: 'utilisateurs', label: '👥 Utilisateurs' },
+  { cle: 'stats', label: '📊 Statistiques' }
+]
 
 function AdminPage() {
-  const [produits, setProduits] = useState([])
-
-  function charger() {
-    api.get('/products').then(function(rep){ setProduits(rep.data) })
-  }
-
-  useEffect(function(){ charger() }, [])
-
-  async function supprimer(id) {
-    await api.delete('/products/' + id)
-    charger()
-  }
+  const [onglet, setOnglet] = useState('produits')
 
   return (
     <div className="container py-5">
       <h1 className="mb-4">Espace admin</h1>
 
-      <AddProductForm onAjoute={charger} />
+      <ul className="nav nav-tabs mb-4">
+        {ONGLETS.map(function(o){
+          return (
+            <li className="nav-item" key={o.cle}>
+              <button
+                className={'nav-link' + (onglet === o.cle ? ' active' : '')}
+                onClick={function(){ setOnglet(o.cle) }}
+              >
+                {o.label}
+              </button>
+            </li>
+          )
+        })}
+      </ul>
 
-      <h4>Produits ({produits.length})</h4>
-      <table className="table">
-        <tbody>
-          {produits.map(function(p){
-            return (
-              <tr key={p._id}>
-                <td>{p.nom}</td>
-                <td>{p.prix.toLocaleString('fr-DZ')} DZD</td>
-                <td>
-                  <button className="btn btn-sm btn-danger"
-                    onClick={function(){ supprimer(p._id) }}>Supprimer</button>
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+      {onglet === 'produits' && <AdminProduits />}
+      {onglet === 'commandes' && <AdminCommandes />}
+      {onglet === 'utilisateurs' && <AdminUtilisateurs />}
+      {onglet === 'stats' && <AdminStatistiques />}
     </div>
   )
 }

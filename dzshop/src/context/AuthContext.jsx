@@ -36,7 +36,7 @@ export function AuthProvider({ children }) {
   }
 
   // Au démarrage, on demande au serveur « qui suis-je ? » :
-  // si le token a expiré, on déconnecte proprement.
+  // si le token a expiré (ou si le compte a été bloqué entre-temps), on déconnecte proprement.
   useEffect(function() {
     if (!localStorage.getItem('token')) return
 
@@ -46,7 +46,7 @@ export function AuthProvider({ children }) {
         setUser(rep.data.user)
       })
       .catch(function(err) {
-        if (err.response && err.response.status === 401) { logout() }
+        if (err.response && (err.response.status === 401 || err.response.status === 403)) { logout() }
       })
   }, [])
 
@@ -72,8 +72,20 @@ export function AuthProvider({ children }) {
     }
   }
 
+  // Connexion avec Google : credential = le jeton fabriqué par Google dans le navigateur.
+  // Le serveur le vérifie lui-même avant de renvoyer un token DZShop classique.
+  async function loginGoogle(credential) {
+    try {
+      const rep = await api.post('/auth/google', { credential: credential })
+      sauvegarder(rep.data)
+      return rep.data.user
+    } catch (err) {
+      throw new Error(messageErreur(err))
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, login, register, loginGoogle, logout }}>
       {children}
     </AuthContext.Provider>
   )
